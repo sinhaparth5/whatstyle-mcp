@@ -1,7 +1,10 @@
 package configs
 
 import (
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -11,7 +14,7 @@ type Config struct {
 	GrokAPIKey   string
 	GrokModel    string
 	GrokBaseURL  string
-
+	
 	// WhatsApp Business API
 	WhatsAppAccessToken   string
 	WhatsAppVerifyToken   string
@@ -20,6 +23,10 @@ type Config struct {
 }
 
 func Load() *Config {
+	if err := godotenv.Load(); err != nil {
+		log.Printf("No .env file found or error loading it: %v", err)
+	}
+
 	config := &Config{
 		Port:         getEnv("PORT", "8080"),
 		DatabasePath: getEnv("DATABASE_PATH", "./mcp_server.db"),
@@ -27,12 +34,12 @@ func Load() *Config {
 		GrokAPIKey:   getEnv("GROK_API_KEY", ""),
 		GrokModel:    getEnv("GROK_MODEL", "grok-beta"),
 		GrokBaseURL:  getEnv("GROK_BASE_URL", "https://api.x.ai/v1"),
-
+		
 		// WhatsApp Business API
 		WhatsAppAccessToken:   getEnv("WHATSAPP_ACCESS_TOKEN", ""),
 		WhatsAppVerifyToken:   getEnv("WHATSAPP_VERIFY_TOKEN", ""),
 		WhatsAppPhoneNumberID: getEnv("WHATSAPP_PHONE_NUMBER_ID", ""),
-		WhatsAppWebhookURL:    getEnv("WHATSAPP_BASE_URL", ""),
+		WhatsAppWebhookURL:    getEnv("WHATSAPP_WEBHOOK_URL", ""),
 	}
 
 	return config
@@ -44,4 +51,3 @@ func getEnv(key, defaultValue string) string {
 	}
 	return defaultValue
 }
-
